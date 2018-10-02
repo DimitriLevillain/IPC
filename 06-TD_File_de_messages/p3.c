@@ -20,8 +20,6 @@ int main(int argc, char** argv) {
     struct donnees file;
     int id;
     int retour;
-    int type;
-    float valEnv;
     key_t key;
 
     //Obtention de la clé
