@@ -4,23 +4,16 @@
  * and open the template in the editor.
  */
 
-/* 
- * File:   p3.c
- * Author: dlevillain
- *
- * Created on 2 octobre 2018, 09:19
- */
-
 #include "zone.h"
 
-/*
- * 
- */
+float randomC(){
+	return ((char)('A'+((char)24.0*(rand()/(RAND_MAX+0.1)))));
+}
+
 int main(int argc, char** argv) {
     struct donnees file;
     int id;
     int retour;
-    int type;
     float valEnv;
     key_t key;
 
@@ -30,21 +23,25 @@ int main(int argc, char** argv) {
         perror("ftok");
         exit(2);
     }
-    //Obtention de la file pou la clé
+    //Obtention de la file pour la clé
     id = msgget(key, 0666 | IPC_CREAT);
     if (id == -1) {
         printf("pb creation file : %s\n", strerror(errno));
         exit(1);
     }
-    
-    while(1){
-    memset(file.texte, '\0', 9);
-    retour = msgrcv(id, (void*) &file, 9, 2, IPC_NOWAIT);
-    if (retour != -1) {
-        printf("temp : %.5s\n",file.texte);
+
+    //Envoi des messages
+    while (1) {
+        //Type 3
+        file.texte[0]=randomC();    //Tirage au sort d'une lettre
+        file.type = 3;
+        printf("type = %ld message = %s\n", file.type, file.texte); 
+        retour = msgsnd(id, (void*) &file, sizeof(char), IPC_NOWAIT);    //envoi du message
+        if (retour == -1) {
+            printf("Echec msgsnd");
+        }
+        sleep(1);
     }
-}
 
     return (EXIT_SUCCESS);
 }
-
